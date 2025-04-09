@@ -1,0 +1,99 @@
+{
+  "videos": [
+    {
+      "id": "german-greetings",
+      "title": "German Greetings and Introductions",
+      "description": "Learn the most common German greetings and how to introduce yourself in different situations.",
+      "level": "A1",
+      "topic": "Vocabulary",
+      "videoId": "xpumLsaAWGM",
+      "thumbnail": "/placeholder.svg?height=200&width=350&text=German%20Greetings",
+      "subtitles": [
+        { "startTime": "0:00", "endTime": "0:05", "text": "Hallo! Wie geht's?" },
+        { "startTime": "0:06", "endTime": "0:10", "text": "Ich heiße Max. Wie heißt du?" },
+        { "startTime": "0:11", "endTime": "0:15", "text": "Freut mich, dich kennenzulernen." },
+        { "startTime": "0:16", "endTime": "0:20", "text": "Guten Morgen! Wie geht es Ihnen?" },
+        { "startTime": "0:21", "endTime": "0:25", "text": "Guten Tag! Schön, Sie kennenzulernen." }
+      ],
+      "vocabulary": [
+        { "german": "Hallo", "english": "Hello", "example": "Hallo, wie geht's?" },
+        { "german": "Wie geht's?", "english": "How are you? (informal)", "example": "Hallo, wie geht's?" },
+        {
+          "german": "Wie geht es Ihnen?",
+          "english": "How are you? (formal)",
+          "example": "Guten Tag, wie geht es Ihnen?"
+        },
+        { "german": "Ich heiße", "english": "My name is", "example": "Ich heiße Anna." },
+        { "german": "Wie heißt du?", "english": "What's your name? (informal)", "example": "Wie heißt du?" },
+        { "german": "Wie heißen Sie?", "english": "What's your name? (formal)", "example": "Wie heißen Sie?" },
+        { "german": "Freut mich", "english": "Nice to meet you", "example": "Freut mich, dich kennenzulernen." },
+        { "german": "Guten Morgen", "english": "Good morning", "example": "Guten Morgen! Wie geht es dir?" },
+        { "german": "Guten Tag", "english": "Good day", "example": "Guten Tag! Kann ich Ihnen helfen?" },
+        { "german": "Guten Abend", "english": "Good evening", "example": "Guten Abend! Schön, Sie zu sehen." }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "question": "How do you say 'Hello' in German?",
+            "options": ["Hallo", "Tschüss", "Danke", "Bitte"],
+            "answer": 0
+          },
+          {
+            "question": "What does 'Wie geht's?' mean?",
+            "options": ["What's your name?", "How are you?", "Where are you from?", "How old are you?"],
+            "answer": 1
+          },
+          {
+            "question": "How do you introduce yourself in German?",
+            "options": ["Wie heißt du?", "Woher kommst du?", "Ich heiße...", "Wie alt bist du?"],
+            "answer": 2
+          },
+          {
+            "question": "Which is the formal way to ask 'How are you?'",
+            "options": ["Wie geht's?", "Wie geht es Ihnen?", "Wie geht es dir?", "Wie bist du?"],
+            "answer": 1
+          },
+          {
+            "question": "What is the correct greeting for the morning?",
+            "options": ["Guten Tag", "Gute Nacht", "Guten Abend", "Guten Morgen"],
+            "answer": 3
+          }
+        ]
+      },
+      "exercises": [
+        {
+          "title": "Fill in the blank",
+          "instruction": "Complete the sentence: '_______ Max. Wie heißt du?'",
+          "answer": "Ich heiße"
+        },
+        {
+          "title": "Translation",
+          "instruction": "Translate to German: 'Nice to meet you'",
+          "answer": "Freut mich"
+        },
+        {
+          "title": "Formal vs Informal",
+          "instruction": "What is the formal version of 'Wie geht's?'",
+          "answer": "Wie geht es Ihnen?"
+        },
+        {
+          "title": "Complete the dialogue",
+          "instruction": "Person A: Guten Tag! Wie heißen Sie?\nPerson B: _______",
+          "answer": "Ich heiße [Name]"
+        }
+      ],
+      "flashcards": [
+        { "front": "Hallo", "back": "Hello" },
+        { "front": "Wie geht's?", "back": "How are you? (informal)" },
+        { "front": "Ich heiße", "back": "My name is" },
+        { "front": "Wie heißt du?", "back": "What's your name? (informal)" },
+        { "front": "Freut mich", "back": "Nice to meet you" },
+        { "front": "Guten Morgen", "back": "Good morning" },
+        { "front": "Guten Tag", "back": "Good day" },
+        { "front": "Guten Abend", "back": "Good evening" },
+        { "front": "Wie geht es Ihnen?", "back": "How are you? (formal)" },
+        { "front": "Wie heißen Sie?", "back": "What's your name? (formal)" }
+      ]
+    }
+  ]
+}

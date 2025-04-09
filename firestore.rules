@@ -1,0 +1,90 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    // Allow public read access to videos collection
+    match /videos/{videoId} {
+      allow read: true;
+      // Only allow write access to authenticated admin users
+      allow write: if request.auth != null && 
+                   exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                   get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // User collection rules
+    match /users/{userId} {
+      // Users can read and write their own data
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Admins can read all user data
+      allow read: if request.auth != null && 
+                  exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                  get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // Admin verification rules
+    match /adminVerification/{email} {
+      // Only allow access to the specific admin email
+      allow read, write: if request.auth != null && 
+                       request.auth.token.email == email &&
+                       exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // Admin operations rules
+    match /admin/{document=**} {
+      // Allow full access to admin operations for verified admins
+      allow read, write: if isAdmin();
+    }
+    
+    // Exercises collection rules
+    match /exercises/{exerciseId} {
+      // Allow authenticated users to read exercises
+      allow read: if isAuthenticated();
+      // Allow admins to write exercises
+      allow write: if isAdmin();
+    }
+
+    // Quiz collection rules
+    match /quizzes/{quizId} {
+      // Allow authenticated users to read quizzes
+      allow read: if isAuthenticated();
+      // Allow admins to create and update quizzes
+      allow write: if isAdmin();
+    }
+    
+    // Quiz attempts collection rules
+    match /quizAttempts/{attemptId} {
+      // Users can read and write their own quiz attempts
+      allow read, write: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      // Admins can read all quiz attempts
+      allow read: if isAdmin();
+    }
+    
+    // Exercise collection rules
+    match /exercises/{exerciseId} {
+      // Allow authenticated users to read exercises
+      allow read: if isAuthenticated();
+      // Allow admins to create and update exercises
+      allow write: if isAdmin();
+    }
+    
+    // Exercise attempts collection rules
+    match /exerciseAttempts/{attemptId} {
+      // Users can read and write their own exercise attempts
+      allow read, write: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      // Admins can read all exercise attempts
+      allow read: if isAdmin();
+    }
+  }
+}

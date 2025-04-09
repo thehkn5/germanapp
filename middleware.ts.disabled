@@ -1,0 +1,12 @@
+// Rename this file to middleware.ts.disabled to temporarily disable it
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+  // Just pass through all requests for now
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: [],
+};

@@ -1,0 +1,82 @@
+{
+  "videoContent": {
+    "subtitles": [
+      { "startTime": "0:00", "endTime": "0:05", "text": "Willkommen zu unserem Deutschkurs!" },
+      { "startTime": "0:06", "endTime": "0:10", "text": "Heute lernen wir über deutsche Grammatik." },
+      { "startTime": "0:11", "endTime": "0:15", "text": "Wir beginnen mit den Grundlagen." },
+      {
+        "startTime": "0:16",
+        "endTime": "0:20",
+        "text": "Deutsch hat vier Fälle: Nominativ, Akkusativ, Dativ und Genitiv."
+      },
+      { "startTime": "0:21", "endTime": "0:25", "text": "Lasst uns mit dem Nominativ beginnen." }
+    ],
+    "vocabulary": [
+      { "german": "Willkommen", "english": "Welcome", "example": "Willkommen in Deutschland!" },
+      { "german": "der Kurs", "english": "the course", "example": "Der Deutschkurs beginnt um 9 Uhr." },
+      { "german": "die Grammatik", "english": "the grammar", "example": "Deutsche Grammatik ist nicht einfach." },
+      { "german": "die Grundlagen", "english": "the basics", "example": "Zuerst lernen wir die Grundlagen." },
+      { "german": "der Fall", "english": "the case", "example": "Im Deutschen gibt es vier Fälle." },
+      { "german": "der Nominativ", "english": "the nominative case", "example": "Der Nominativ ist der erste Fall." },
+      {
+        "german": "der Akkusativ",
+        "english": "the accusative case",
+        "example": "Den Akkusativ benutzt man für das direkte Objekt."
+      },
+      { "german": "der Dativ", "english": "the dative case", "example": "Dem Dativ folgen bestimmte Präpositionen." },
+      { "german": "der Genitiv", "english": "the genitive case", "example": "Der Genitiv drückt Besitz aus." }
+    ],
+    "quiz": {
+      "questions": [
+        {
+          "question": "How many cases are there in German?",
+          "options": ["2", "3", "4", "5"],
+          "answer": 2
+        },
+        {
+          "question": "What is 'grammar' in German?",
+          "options": ["der Kurs", "die Grammatik", "die Grundlagen", "der Fall"],
+          "answer": 1
+        },
+        {
+          "question": "Which is NOT a case in German?",
+          "options": ["Nominativ", "Akkusativ", "Objektiv", "Genitiv"],
+          "answer": 2
+        },
+        {
+          "question": "What does 'Willkommen' mean?",
+          "options": ["Welcome", "Goodbye", "Thank you", "Please"],
+          "answer": 0
+        }
+      ]
+    },
+    "exercises": [
+      {
+        "title": "Fill in the blank",
+        "instruction": "Complete the sentence: 'Im Deutschen gibt es vier _______.'",
+        "answer": "Fälle"
+      },
+      {
+        "title": "Translation",
+        "instruction": "Translate to English: 'die Grundlagen'",
+        "answer": "the basics"
+      },
+      {
+        "title": "Case identification",
+        "instruction": "Which case is used for the direct object?",
+        "answer": "Akkusativ"
+      }
+    ],
+    "flashcards": [
+      { "front": "Willkommen", "back": "Welcome" },
+      { "front": "der Kurs", "back": "the course" },
+      { "front": "die Grammatik", "back": "the grammar" },
+      { "front": "die Grundlagen", "back": "the basics" },
+      { "front": "der Fall", "back": "the case" },
+      { "front": "der Nominativ", "back": "the nominative case" },
+      { "front": "der Akkusativ", "back": "the accusative case" },
+      { "front": "der Dativ", "back": "the dative case" },
+      { "front": "der Genitiv", "back": "the genitive case" }
+    ]
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "vocabulary": {
+    "multiple_choice": [
+      {
+        "id": "vmc1",
+        "type": "multiple-choice",
+        "question": "What is the meaning of 'der Hund'?",
+        "options": ["the dog", "the cat", "the bird", "the fish"],
+        "correctAnswer": "the dog",
+        "explanation": "'Der Hund' is the German word for 'the dog'. 'Der' indicates it's a masculine noun."
+      },
+      {
+        "id": "vmc2",
+        "type": "multiple-choice",
+        "question": "Choose the correct meaning of 'das Haus':",
+        "options": ["the house", "the apartment", "the building", "the room"],
+        "correctAnswer": "the house",
+        "explanation": "'Das Haus' means 'the house' in German. 'Das' indicates it's a neuter noun."
+      },
+      {
+        "id": "vmc3",
+        "type": "multiple-choice",
+        "question": "What does 'die Katze' mean?",
+        "options": ["the cat", "the dog", "the mouse", "the rabbit"],
+        "correctAnswer": "the cat",
+        "explanation": "'Die Katze' is German for 'the cat'. 'Die' indicates it's a feminine noun."
+      },
+      {
+        "id": "vmc4",
+        "type": "multiple-choice",
+        "question": "Select the meaning of 'der Tisch':",
+        "options": ["the table", "the chair", "the desk", "the bed"],
+        "correctAnswer": "the table",
+        "explanation": "'Der Tisch' means 'the table' in German. It's a masculine noun."
+      },
+      {
+        "id": "vmc5",
+        "type": "multiple-choice",
+        "question": "What is the meaning of 'das Buch'?",
+        "options": ["the book", "the paper", "the pen", "the notebook"],
+        "correctAnswer": "the book",
+        "explanation": "'Das Buch' is German for 'the book'. It's a neuter noun."
+      }
+    ],
+    "matching": [
+      {
+        "id": "vm1",
+        "type": "matching",
+        "question": "Match the German words with their English meanings",
+        "pairs": [
+          {
+            "id": "1",
+            "left": "Hund",
+            "right": "dog"
+          },
+          {
+            "id": "2",
+            "left": "Katze",
+            "right": "cat"
+          },
+          {
+            "id": "3",
+            "left": "Haus",
+            "right": "house"
+          },
+          {
+            "id": "4",
+            "left": "Buch",
+            "right": "book"
+          }
+        ]
+      },
+      {
+        "id": "vm2",
+        "type": "matching",
+        "question": "Match the colors in German and English",
+        "pairs": [
+          {
+            "id": "1",
+            "left": "rot",
+            "right": "red"
+          },
+          {
+            "id": "2",
+            "left": "blau",
+            "right": "blue"
+          },
+          {
+            "id": "3",
+            "left": "grün",
+            "right": "green"
+          },
+          {
+            "id": "4",
+            "left": "gelb",
+            "right": "yellow"
+          }
+        ]
+      }
+    ],
+    "word_search": [
+      {
+        "id": "vws1",
+        "type": "word-search",
+        "question": "Find the German words for animals",
+        "grid": [
+          ["H", "U", "N", "D", "K", "L", "M"],
+          ["A", "B", "C", "E", "A", "F", "G"],
+          ["K", "A", "T", "Z", "E", "H", "I"],
+          ["J", "K", "L", "M", "N", "O", "P"],
+          ["M", "A", "U", "S", "Q", "R", "S"],
+          ["T", "U", "V", "W", "X", "Y", "Z"]
+        ],
+        "words": ["HUND", "KATZE", "MAUS"],
+        "explanation": "These are common German words for animals: HUND (dog), KATZE (cat), MAUS (mouse)"
+      }
+    ]
+  },
+  "integrated": {
+    "multiple_choice": [
+      {
+        "id": "imc1",
+        "type": "multiple-choice",
+        "question": "Based on the video, what is the correct article for 'Hund'?",
+        "options": ["der", "die", "das", "den"],
+        "correctAnswer": "der",
+        "explanation": "'Hund' is a masculine noun in German, so it takes the article 'der'."
+      },
+      {
+        "id": "imc2",
+        "type": "multiple-choice",
+        "question": "Which sentence correctly uses the word 'Haus'?",
+        "options": [
+          "Das Haus ist groß",
+          "Der Haus ist groß",
+          "Die Haus ist groß",
+          "Den Haus ist groß"
+        ],
+        "correctAnswer": "Das Haus ist groß",
+        "explanation": "'Haus' is a neuter noun, so it uses the article 'das'."
+      }
+    ],
+    "fill_blanks": [
+      {
+        "id": "ifb1",
+        "type": "fill-blanks",
+        "question": "Complete the sentences using the correct articles",
+        "blanks": [
+          {
+            "id": "1",
+            "answer": "der",
+            "position": 1,
+            "hint": "article for Hund"
+          },
+          {
+            "id": "2",
+            "answer": "die",
+            "position": 2,
+            "hint": "article for Katze"
+          }
+        ],
+        "explanation": "'Hund' uses 'der' (masculine) and 'Katze' uses 'die' (feminine)"
+      }
+    ],
+    "true_false": [
+      {
+        "id": "itf1",
+        "type": "true-false",
+        "question": "'Das Hund' is the correct way to say 'the dog' in German.",
+        "correctAnswer": false,
+        "explanation": "False. The correct article for 'Hund' is 'der' because it's a masculine noun."
+      },
+      {
+        "id": "itf2",
+        "type": "true-false",
+        "question": "'Die Katze' is the correct way to say 'the cat' in German.",
+        "correctAnswer": true,
+        "explanation": "True. 'Katze' is a feminine noun, so it uses the article 'die'."
+      }
+    ]
+  }
+}
