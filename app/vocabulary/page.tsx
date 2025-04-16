@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Search, BookOpen, Grid, ListIcon, Plus, Trash2 } from "lucide-react"
+import { Search, BookOpen, Grid, ListIcon, Plus, Trash2, Globe } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from "@/contexts/auth-context"
 import {
@@ -20,6 +20,11 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
+
+// Import templates for easy content creation
+import { vocabularyTemplates } from "@/types/vocabulary"
 
 // Sample vocabulary categories
 const vocabularyCategories = [
@@ -39,12 +44,8 @@ const vocabularyCategories = [
   { id: "home", title: "Home & Furniture", count: 70, description: "Household items and furniture vocabulary" },
 ]
 
-// Interface for custom vocabulary list
-interface CustomList {
-  id: string
-  name: string
-  words: any[]
-}
+// Import centralized types
+import { CustomList, Word } from "@/types/vocabulary"
 
 // Storage key for custom vocabulary lists
 const CUSTOM_LISTS_KEY = "custom_vocabulary_lists"
@@ -56,6 +57,8 @@ export default function VocabularyPage() {
   const [customLists, setCustomLists] = useState<CustomList[]>([])
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [newListName, setNewListName] = useState("")
+  const [newListDescription, setNewListDescription] = useState("")
+  const [isListPublic, setIsListPublic] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [listToDelete, setListToDelete] = useState<string | null>(null)
 
@@ -81,13 +84,21 @@ export default function VocabularyPage() {
     const newList: CustomList = {
       id: Date.now().toString(),
       name: newListName,
+      description: newListDescription,
       words: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      isPublic: isListPublic
     }
 
     const updatedLists = [...customLists, newList]
     setCustomLists(updatedLists)
     localStorage.setItem(CUSTOM_LISTS_KEY, JSON.stringify(updatedLists))
+    
+    // Reset form
     setNewListName("")
+    setNewListDescription("")
+    setIsListPublic(false)
     setShowCreateDialog(false)
   }
 
@@ -191,6 +202,12 @@ export default function VocabularyPage() {
           <div className="mb-6 flex justify-between items-center">
             <h2 className="text-xl font-semibold">Vocabulary Categories</h2>
             <div className="flex gap-2">
+              <Link href="/community?type=vocabulary">
+                <Button variant="outline" size="sm" className="gap-1">
+                  <Globe className="h-4 w-4" />
+                  Explore Community Lists
+                </Button>
+              </Link>
               <Button
                 variant="outline"
                 size="icon"
@@ -260,22 +277,62 @@ export default function VocabularyPage() {
         </div>
       </div>
 
-      {/* Create new list dialog */}
+      {/* Create List Dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Create New Vocabulary List</DialogTitle>
-            <DialogDescription>Create a custom list to save and organize vocabulary words</DialogDescription>
+            <DialogDescription>
+              Create a custom list to save and organize vocabulary words
+            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="list-name">List Name</Label>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
               <Input
-                id="list-name"
-                placeholder="e.g., My Favorite Words"
+                id="name"
                 value={newListName}
                 onChange={(e) => setNewListName(e.target.value)}
+                className="col-span-3"
+                placeholder="My Vocabulary List"
               />
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label htmlFor="description" className="text-right">
+                Description
+              </Label>
+              <Textarea
+                id="description"
+                value={newListDescription}
+                onChange={(e) => setNewListDescription(e.target.value)}
+                className="col-span-3"
+                placeholder="Optional description for your list"
+                rows={3}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="isPublic" className="text-right">
+                Sharing
+              </Label>
+              <div className="flex flex-col space-y-1.5 col-span-3">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="isPublic"
+                    checked={isListPublic}
+                    onCheckedChange={setIsListPublic}
+                  />
+                  <Label htmlFor="isPublic" className="font-normal">
+                    Share this list publicly
+                  </Label>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {isListPublic 
+                    ? "This list will be visible to other users in the community." 
+                    : "This list will only be visible to you."}
+                </p>
+              </div>
             </div>
           </div>
           <DialogFooter>

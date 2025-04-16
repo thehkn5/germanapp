@@ -8,9 +8,8 @@ service cloud.firestore {
     
     // Helper function to check if user is admin
     function isAdmin() {
-      return isAuthenticated() &&
-             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      let userDoc = get(/databases/$(database)/documents/users/$(request.auth.uid));
+      return userDoc != null && userDoc.data.isAdmin == true;
     }
     // Allow public read access to videos collection
     match /videos/{videoId} {
@@ -21,15 +20,33 @@ service cloud.firestore {
                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
     
-    // User collection rules
+    // User profiles - users can read their own profiles, admins can read and write all
     match /users/{userId} {
-      // Users can read and write their own data
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, update: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow create: if request.auth != null;
       
-      // Admins can read all user data
-      allow read: if request.auth != null && 
-                  exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-                  get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      // User roadmaps subcollection - users can manage their own roadmaps
+      match /user_roadmaps/{roadmapId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // Other user subcollections
+      match /{document=**} {
+        allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      }
+    }
+    
+    // Top-level roadmaps collection - users can manage their own roadmaps
+    match /roadmaps/{roadmapId} {
+      allow read: if request.auth != null && (
+        resource.data.userId == request.auth.uid || 
+        resource.data.isPublic == true || 
+        isAdmin()
+      );
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      // Admins can manage all roadmaps
+      allow write: if request.auth != null && isAdmin();
     }
     
     // Admin verification rules

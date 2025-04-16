@@ -45,6 +45,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("Auth state changed:", currentUser ? `User: ${currentUser.email}` : "No user")
       setUser(currentUser)
       setLoading(false)
+      
+      // Don't redirect automatically - let individual pages handle auth state
     })
 
     return () => {

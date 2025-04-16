@@ -1,9 +1,10 @@
 "use client"
 
-import { BookOpen, Video, Info, Sparkles, LineChart, Target } from "lucide-react"
+import { BookOpen, Video, Info, Globe, Map, Pencil, BarChart2 } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 export function MainNav() {
   const { user } = useAuth()
@@ -16,7 +17,7 @@ export function MainNav() {
 
   return (
     <nav className="flex items-center space-x-4 lg:space-x-6 mx-6 overflow-x-auto">
-      <a
+      <Link
         href="/"
         className={cn(
           "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 whitespace-nowrap",
@@ -24,71 +25,68 @@ export function MainNav() {
         )}
       >
         Home
-      </a>
-      <a
+      </Link>
+      <Link
         href="/videos"
-        className={cn(
-          "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 whitespace-nowrap",
-          isActive("/videos") && "text-primary",
-        )}
+        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ${
+          isActive("/videos") && "text-primary"
+        }`}
       >
         <Video className="h-4 w-4" />
-        Video Library
-      </a>
-      <a
+        Videos
+      </Link>
+      <Link
         href="/vocabulary"
-        className={cn(
-          "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 whitespace-nowrap",
-          isActive("/vocabulary") && "text-primary",
-        )}
+        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ${
+          isActive("/vocabulary") && "text-primary"
+        }`}
       >
         <BookOpen className="h-4 w-4" />
         Vocabulary
-      </a>
-      {user && (
-        <>
-          <a
-            href="/progress"
-            className={cn(
-              "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 whitespace-nowrap",
-              isActive("/progress") && "text-primary",
-            )}
-          >
-            <LineChart className="h-4 w-4" />
-            My Progress
-          </a>
-          <a
-            href="/goals"
-            className={cn(
-              "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 whitespace-nowrap",
-              isActive("/goals") && "text-primary",
-            )}
-          >
-            <Target className="h-4 w-4" />
-            Goal Center
-          </a>
-        </>
-      )}
-      <a
-        href="/features"
+      </Link>
+      <Link
+        href="/community"
         className={cn(
           "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 whitespace-nowrap",
-          isActive("/features") && "text-primary",
+          isActive("/community") && "text-primary",
         )}
       >
-        <Sparkles className="h-4 w-4" />
-        Features
-      </a>
-      <a
+        <Globe className="h-4 w-4" />
+        Community
+      </Link>
+      {user && (
+        <>
+          <Link
+            href="/goal-center"
+            className={cn(
+              "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 whitespace-nowrap",
+              (isActive("/goal-center") || isActive("/roadmap")) && "text-primary",
+            )}
+          >
+            <BarChart2 className="h-4 w-4" />
+            Goal Center
+          </Link>
+        </>
+      )}
+      <Link
+        href="/exercises"
+        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ${
+          isActive("/exercises") && "text-primary"
+        }`}
+      >
+        <Pencil className="h-4 w-4" />
+        Exercises
+      </Link>
+      <Link
         href="/about"
         className={cn(
           "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 whitespace-nowrap",
-          isActive("/about") && "text-primary",
+          (isActive("/about") || isActive("/features")) && "text-primary",
         )}
       >
         <Info className="h-4 w-4" />
         About
-      </a>
+      </Link>
     </nav>
   )
 }

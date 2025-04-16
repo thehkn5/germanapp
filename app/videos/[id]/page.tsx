@@ -17,10 +17,39 @@ import {
   Volume2,
   Timer,
   CheckCircle,
+  Globe,
+  Lock,
 } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useAuth } from "@/contexts/auth-context"
 import Link from "next/link"
+
+// Import custom lists functionality
+import { getAllLists, updateLocalStorage } from "@/lib/vocabulary-utils"
+import { Word, CustomList } from "@/types/vocabulary"
+import { useToast } from "@/hooks/use-toast"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"
+import { Plus, Check, Plus as PlusIcon } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
 
 // Sample video data for development
 const sampleVideos = [
@@ -98,6 +127,24 @@ export default function VideoDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeSubtitle, setActiveSubtitle] = useState<number | null>(null)
+  const { toast } = useToast()
+  const [customLists, setCustomLists] = useState<CustomList[]>([])
+  const [recentlySavedWords, setRecentlySavedWords] = useState<{[key: string]: string[]}>({})
+  
+  // New list dialog state
+  const [isNewListDialogOpen, setIsNewListDialogOpen] = useState(false)
+  const [newListName, setNewListName] = useState("")
+  const [newListDescription, setNewListDescription] = useState("")
+  const [isNewListPublic, setIsNewListPublic] = useState(false)
+  const [wordToAddToNewList, setWordToAddToNewList] = useState<any>(null)
+
+  // Fetch custom lists
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const lists = getAllLists();
+      setCustomLists(lists);
+    }
+  }, []);
 
   // Fetch video data
   useEffect(() => {
@@ -149,7 +196,188 @@ export default function VideoDetailPage() {
     )
   }
 
-  return (
+  // Function to handle saving word to custom list
+const handleSaveToCustomList = (word: any, listId: string) => {
+    try {
+      // Get all lists
+      const allLists = getAllLists();
+      
+      // Find the target list
+      const targetListIndex = allLists.findIndex(list => list.id === listId);
+      
+      if (targetListIndex === -1) {
+        toast({
+          title: "Error",
+          description: "Selected list not found",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Check if word already exists in the list to avoid duplicates
+      const targetList = allLists[targetListIndex];
+      const wordExists = targetList.words.some(w => 
+        w.german.toLowerCase() === word.german.toLowerCase() && 
+        w.english.toLowerCase() === word.english.toLowerCase()
+      );
+      
+      if (wordExists) {
+        toast({
+          title: "Already saved",
+          description: `"${word.german}" is already in "${targetList.name}"`,
+          className: "bg-yellow-50 border-yellow-200 text-yellow-800",
+        });
+        return;
+      }
+      
+      // Format the word to match the Word interface
+      const wordToAdd: Word = {
+        id: Date.now().toString(), // Generate a unique ID
+        german: word.german,
+        english: word.english,
+        example: word.example || "",
+        category: "Video Vocabulary",
+        notes: `From video: ${video.title}`
+      };
+      
+      // Add word to the list
+      const updatedList = {...targetList};
+      updatedList.words = [...updatedList.words, wordToAdd];
+      updatedList.updatedAt = new Date().toISOString();
+      
+      // Update the list in local storage
+      allLists[targetListIndex] = updatedList;
+      updateLocalStorage(allLists);
+      
+      // Update state for UI feedback
+      setRecentlySavedWords(prev => ({
+        ...prev,
+        [listId]: [...(prev[listId] || []), word.german]
+      }));
+      
+      // Reset the recently saved status after 3 seconds
+      setTimeout(() => {
+        setRecentlySavedWords(prev => {
+          const updated = {...prev};
+          if (updated[listId]) {
+            updated[listId] = updated[listId].filter(w => w !== word.german);
+            if (updated[listId].length === 0) {
+              delete updated[listId];
+            }
+          }
+          return updated;
+        });
+      }, 3000);
+      
+      // Show success toast
+      toast({
+        title: "Word saved",
+        description: `"${word.german}" added to "${targetList.name}"`,
+        className: "bg-green-50 border-green-200 text-green-800",
+      });
+      
+      // Update lists in state
+      setCustomLists(allLists);
+      
+    } catch (error) {
+      console.error("Error saving word:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save word to list",
+        variant: "destructive"
+      });
+    }
+  }
+
+  // Function to open new list dialog
+  const openNewListDialog = (word: any) => {
+    setWordToAddToNewList(word);
+    setNewListName(`Video: ${video.title}`);
+    setNewListDescription(`Vocabulary from ${video.title}`);
+    setIsNewListPublic(false);
+    setIsNewListDialogOpen(true);
+  }
+
+  // Function to create a new list and add word to it
+  const handleCreateListAndAddWord = () => {
+    if (!wordToAddToNewList || !newListName.trim()) return;
+    
+    try {
+      // Get all lists
+      const allLists = getAllLists();
+      
+      // Generate a unique ID for the new list
+      const newListId = `list_${Date.now()}`;
+      
+      // Format the word to match the Word interface
+      const wordToAdd: Word = {
+        id: Date.now().toString(), // Generate a unique ID
+        german: wordToAddToNewList.german,
+        english: wordToAddToNewList.english,
+        example: wordToAddToNewList.example || "",
+        category: "Video Vocabulary",
+        notes: `From video: ${video.title}`
+      };
+      
+      // Create new list - explicitly set isPublic based on user choice
+      const newList: CustomList = {
+        id: newListId,
+        name: newListName.trim(),
+        description: newListDescription.trim(),
+        words: [wordToAdd],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        isPublic: isNewListPublic === true // Ensure private by default
+      };
+      
+      // Add new list to all lists
+      const updatedLists = [...allLists, newList];
+      updateLocalStorage(updatedLists);
+      
+      // Update state for UI feedback
+      setRecentlySavedWords(prev => ({
+        ...prev,
+        [newListId]: [wordToAddToNewList.german]
+      }));
+      
+      // Reset the recently saved status after 3 seconds
+      setTimeout(() => {
+        setRecentlySavedWords(prev => {
+          const updated = {...prev};
+          if (updated[newListId]) {
+            delete updated[newListId];
+          }
+          return updated;
+        });
+      }, 3000);
+      
+      // Show success toast
+      toast({
+        title: "New list created",
+        description: `"${wordToAddToNewList.german}" added to new list "${newList.name}" (${isNewListPublic ? 'Public' : 'Private'})`,
+        className: "bg-blue-50 border-blue-200 text-blue-800",
+      });
+      
+      // Update lists in state
+      setCustomLists(updatedLists);
+      
+      // Close dialog and reset state
+      setIsNewListDialogOpen(false);
+      setWordToAddToNewList(null);
+      setNewListName("");
+      setNewListDescription("");
+      
+    } catch (error) {
+      console.error("Error creating list:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create new list",
+        variant: "destructive"
+      });
+    }
+}
+
+return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
         {/* Back button */}
@@ -242,50 +470,27 @@ export default function VideoDetailPage() {
                 <CardDescription>Interactive tools to help you learn</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {user ? (
-                  <>
-                    <Link href={`/videos/${video.id}/quiz`} className="block">
-                      <Button variant="outline" className="w-full justify-start gap-2">
-                        <Brain className="h-4 w-4" />
-                        Quiz
-                        <Badge variant="secondary" className="ml-auto">
-                          {video.quiz?.questions?.length || 0} questions
-                        </Badge>
-                      </Button>
-                    </Link>
-                    <Link href={`/videos/${video.id}/exercises`} className="block">
-                      <Button variant="outline" className="w-full justify-start gap-2">
-                        <FlaskConical className="h-4 w-4" />
-                        Exercises
-                        <Badge variant="secondary" className="ml-auto">
-                          {video.exercises?.length || 0} exercises
-                        </Badge>
-                      </Button>
-                    </Link>
-                    <Link href={`/videos/${video.id}/flashcards`} className="block">
-                      <Button variant="outline" className="w-full justify-start gap-2">
-                        <BookOpen className="h-4 w-4" />
-                        Flashcards
-                        <Badge variant="secondary" className="ml-auto">
-                          {video.flashcards?.length || 0} cards
-                        </Badge>
-                      </Button>
-                    </Link>
-                    <Link href={`/videos/${video.id}/practice`} className="block">
-                      <Button variant="outline" className="w-full justify-start gap-2">
-                        <Timer className="h-4 w-4" />
-                        Practice Session
-                      </Button>
-                    </Link>
-                  </>
-                ) : (
-                  <div className="text-center p-4 bg-muted/20 rounded-lg">
-                    <p className="mb-3">Sign in to access interactive learning tools</p>
-                    <Link href="/auth/sign-in">
-                      <Button className="w-full">Sign In</Button>
-                    </Link>
-                  </div>
-                )}
+                <div className="grid grid-cols-2 gap-4">
+                  <Button variant="outline" className="gap-2" onClick={() => router.push(`/videos/${id}/quiz`)}>
+                    <BookOpen className="h-4 w-4" />
+                    Quizzes
+                  </Button>
+                  <Button variant="outline" className="gap-2" onClick={() => router.push(`/videos/${id}/flashcards`)}>
+                    <Brain className="h-4 w-4" />
+                    Flashcards
+                  </Button>
+                  <Button variant="outline" className="gap-2 opacity-50" disabled>
+                    <FlaskConical className="h-4 w-4" />
+                    Exercises
+                  </Button>
+                  <Button variant="outline" className="gap-2 opacity-50" disabled>
+                    <Timer className="h-4 w-4" />
+                    Practice Sessions
+                  </Button>
+                </div>
+                <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md text-sm text-green-800">
+                  Note: Exercises and Practice Sessions features are currently under development and coming soon!
+                </div>
               </CardContent>
             </Card>
 
@@ -311,11 +516,56 @@ export default function VideoDetailPage() {
                           <TableRow key={index}>
                             <TableCell className="font-medium">{word.german}</TableCell>
                             <TableCell>{word.english}</TableCell>
-                            <TableCell>
+                            <TableCell className="flex gap-1">
                               <Button variant="ghost" size="icon" className="h-8 w-8">
                                 <Volume2 className="h-4 w-4" />
                                 <span className="sr-only">Pronounce</span>
                               </Button>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                                    <PlusIcon className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-56">
+                                  <div className="p-2 text-sm font-medium text-center text-muted-foreground">
+                                    Save to list
+                                  </div>
+                                  <DropdownMenuSeparator />
+                                  {customLists.length > 0 ? (
+                                    customLists.map((list) => (
+                                    <DropdownMenuItem 
+                                      key={list.id}
+                                      onClick={() => handleSaveToCustomList(word, list.id)}
+                                      className="flex items-center justify-between"
+                                    >
+                                      <div className="flex items-center gap-1">
+                                        {list.isPublic ? 
+                                          <Globe className="h-3 w-3 text-blue-500" /> : 
+                                          <Lock className="h-3 w-3 text-muted-foreground" />
+                                        }
+                                        <span>{list.name}</span>
+                                      </div>
+                                      {recentlySavedWords[list.id]?.includes(word.german) && (
+                                        <Check className="h-4 w-4 text-green-500" />
+                                      )}
+                                    </DropdownMenuItem>
+                                    ))
+                                  ) : (
+                                    <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                                      No lists found
+                                    </div>
+                                  )}
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem 
+                                    onClick={() => openNewListDialog(word)}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <Plus className="h-4 w-4" />
+                                    <span>Create New List</span>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -380,6 +630,75 @@ export default function VideoDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* New List Dialog */}
+      <Dialog open={isNewListDialogOpen} onOpenChange={(open) => setIsNewListDialogOpen(open)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Create New Vocabulary List</DialogTitle>
+            <DialogDescription>
+              Enter a name and details for your new vocabulary list.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="name"
+                value={newListName}
+                onChange={(e) => setNewListName(e.target.value)}
+                className="col-span-3"
+                placeholder="List name"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label htmlFor="description" className="text-right">
+                Description
+              </Label>
+              <Textarea
+                id="description"
+                value={newListDescription}
+                onChange={(e) => setNewListDescription(e.target.value)}
+                className="col-span-3"
+                placeholder="Optional description"
+                rows={3}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="isPublic" className="text-right">
+                Sharing
+              </Label>
+              <div className="flex flex-col space-y-1.5 col-span-3">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="isPublic"
+                    checked={isNewListPublic}
+                    onCheckedChange={setIsNewListPublic}
+                  />
+                  <Label htmlFor="isPublic" className="font-normal">
+                    Share this list publicly
+                  </Label>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {isNewListPublic 
+                    ? "This list will be visible to other users of the platform." 
+                    : "This list will only be visible to you."}
+                </p>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsNewListDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreateListAndAddWord} disabled={!newListName.trim()}>
+              Create List
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

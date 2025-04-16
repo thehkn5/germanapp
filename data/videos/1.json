@@ -1,0 +1,58 @@
+{
+  "id": "1",
+  "title": "German Greetings and Introductions",
+  "description": "Learn the most common German greetings and how to introduce yourself.",
+  "level": "A1",
+  "topic": "Vocabulary",
+  "thumbnail": "/placeholder.svg?height=200&width=350&text=German%20Greetings",
+  "subtitles": [
+    { "startTime": "0:00", "endTime": "0:05", "text": "Hallo! Wie geht's?" },
+    { "startTime": "0:06", "endTime": "0:10", "text": "Ich heiße Max. Wie heißt du?" },
+    { "startTime": "0:11", "endTime": "0:15", "text": "Freut mich, dich kennenzulernen." }
+  ],
+  "vocabulary": [
+    { "german": "Hallo", "english": "Hello", "example": "Hallo, wie geht's?" },
+    { "german": "Wie geht's?", "english": "How are you?", "example": "Hallo, wie geht's?" },
+    { "german": "Ich heiße", "english": "My name is", "example": "Ich heiße Anna." },
+    { "german": "Wie heißt du?", "english": "What's your name?", "example": "Wie heißt du?" },
+    { "german": "Freut mich", "english": "Nice to meet you", "example": "Freut mich, dich kennenzulernen." }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "question": "How do you say 'Hello' in German?",
+        "options": ["Hallo", "Tschüss", "Danke", "Bitte"],
+        "answer": 0
+      },
+      {
+        "question": "What does 'Wie geht's?' mean?",
+        "options": ["What's your name?", "How are you?", "Where are you from?", "How old are you?"],
+        "answer": 1
+      },
+      {
+        "question": "How do you introduce yourself in German?",
+        "options": ["Wie heißt du?", "Woher kommst du?", "Ich heiße...", "Wie alt bist du?"],
+        "answer": 2
+      }
+    ]
+  },
+  "exercises": [
+    {
+      "title": "Fill in the blank",
+      "instruction": "Complete the sentence: '_______ Max. Wie heißt du?'",
+      "answer": "Ich heiße"
+    },
+    {
+      "title": "Translation",
+      "instruction": "Translate to German: 'Nice to meet you'",
+      "answer": "Freut mich"
+    }
+  ],
+  "flashcards": [
+    { "front": "Hallo", "back": "Hello" },
+    { "front": "Wie geht's?", "back": "How are you?" },
+    { "front": "Ich heiße", "back": "My name is" },
+    { "front": "Wie heißt du?", "back": "What's your name?" },
+    { "front": "Freut mich", "back": "Nice to meet you" }
+  ]
+}

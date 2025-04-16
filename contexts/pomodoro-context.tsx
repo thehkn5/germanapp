@@ -103,7 +103,7 @@ export function PomodoroProvider({ children }: { children: ReactNode }) {
   // Settings
   const [settings, setSettings] = useLocalStorage<PomodoroSettings>(settingsKey, defaultSettings)
 
-  // Timer state
+  // Timer state - moved to global context to ensure synchronization
   const [isRunning, setIsRunning] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState(settings.workDuration)
   const [currentSession, setCurrentSession] = useState<"work" | "shortBreak" | "longBreak">("work")

@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app"
-import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth"
+import { getAuth, setPersistence, browserLocalPersistence, connectAuthEmulator } from "firebase/auth"
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore"
-import { getStorage } from "firebase/storage"
+import { getStorage, connectStorageEmulator } from "firebase/storage"
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,6 +19,8 @@ const app = initializeApp(firebaseConfig)
 
 // Initialize Firebase services
 const auth = getAuth(app)
+const db = getFirestore(app)
+const storage = getStorage(app)
 
 // Set persistence to LOCAL (this ensures the user stays logged in)
 setPersistence(auth, browserLocalPersistence)
@@ -29,18 +31,29 @@ setPersistence(auth, browserLocalPersistence)
     console.error("Error setting persistence:", error)
   })
 
-const db = getFirestore(app)
+// Determine if we should use emulators
+// We can set this via environment variable or explicitly set to true for development
+const useEmulators = process.env.NODE_ENV === "development" && 
+  (process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === "true" || true);
 
-// Initialize Storage
-const storage = getStorage(app)
-
-// Use emulators in development if needed
-if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === "true") {
+// Use emulators if specified
+if (useEmulators) {
   try {
-    connectFirestoreEmulator(db, "localhost", 8080)
-    console.log("Connected to Firestore emulator")
+    console.log("🔥 Using Firebase emulators");
+    
+    // Connect to Firestore emulator
+    connectFirestoreEmulator(db, "localhost", 8080);
+    console.log("Connected to Firestore emulator");
+    
+    // Connect to Auth emulator
+    connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
+    console.log("Connected to Auth emulator");
+    
+    // Connect to Storage emulator
+    connectStorageEmulator(storage, "localhost", 9199);
+    console.log("Connected to Storage emulator");
   } catch (error) {
-    console.error("Failed to connect to Firestore emulator:", error)
+    console.error("Failed to connect to Firebase emulators:", error);
   }
 }
 
